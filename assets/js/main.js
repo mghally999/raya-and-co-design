@@ -1,8 +1,10 @@
-/* RAYAA & CO — vanilla JS (no animations)
-   Only: theme toggle, mobile nav, active nav state, content rendering,
-   product swatch tints, contact + newsletter forms, footer year. */
+/* RAYAA & CO — vanilla JS
+   theme toggle, mobile nav, active nav, content rendering, product swatches,
+   contact + newsletter forms, footer year, and the cart + checkout flow. */
 (function () {
-  /* Active nav underline CSS injected from JS */
+  const CART_STORAGE_KEY = "rayaa-cart-v1";
+
+  /* ───────────────────────── Active nav CSS ───────────────────────── */
   function injectActiveNavCSS() {
     if (document.getElementById("rayaa-active-nav-style")) return;
 
@@ -42,7 +44,7 @@
     document.head.appendChild(style);
   }
 
-  /* Theme */
+  /* ───────────────────────── Theme ───────────────────────── */
   function initTheme() {
     let stored = null;
     try {
@@ -94,7 +96,7 @@
       .forEach((btn) => btn.addEventListener("click", toggleTheme));
   }
 
-  /* Mobile nav */
+  /* ───────────────────────── Mobile nav ───────────────────────── */
   function initMobileNav() {
     const sheet = document.getElementById("mobile-nav");
     const btn = document.querySelector(".hamburger");
@@ -138,7 +140,7 @@
     });
   }
 
-  /* Active nav */
+  /* ───────────────────────── Active nav ───────────────────────── */
   function normalizePath(path) {
     if (!path) return "index.html";
 
@@ -253,10 +255,441 @@
     window.addEventListener("hashchange", markActiveNav);
   }
 
-  /* Product card */
+  /* ───────────────────────── Cart state ───────────────────────── */
+  function readCart() {
+    try {
+      const raw = localStorage.getItem(CART_STORAGE_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function writeCart(items) {
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+    } catch (_) {}
+    updateCartBadges();
+    renderCartContents();
+  }
+
+  function findProductById(id) {
+    if (!window.RAYAA_PRODUCTS) return null;
+    return window.RAYAA_PRODUCTS.find((p) => p.id === id) || null;
+  }
+
+  function cartItemKey(productId, swatch) {
+    return `${productId}::${swatch || ""}`;
+  }
+
+  function addToCart(productId, swatch, qty) {
+    const product = findProductById(productId);
+    if (!product) return;
+    const items = readCart();
+    const key = cartItemKey(productId, swatch);
+    const existing = items.find((i) => cartItemKey(i.id, i.swatch) === key);
+    if (existing) {
+      existing.qty = Math.min(99, existing.qty + (qty || 1));
+    } else {
+      items.push({
+        id: productId,
+        swatch: swatch || null,
+        qty: Math.max(1, qty || 1),
+      });
+    }
+    cartView = "cart";
+    writeCart(items);
+    openCart();
+    flashAdded(product.name);
+  }
+
+  function updateQty(productId, swatch, qty) {
+    const items = readCart();
+    const key = cartItemKey(productId, swatch);
+    const next = items
+      .map((i) => {
+        if (cartItemKey(i.id, i.swatch) !== key) return i;
+        return { ...i, qty: Math.max(0, Math.min(99, qty)) };
+      })
+      .filter((i) => i.qty > 0);
+    writeCart(next);
+  }
+
+  function removeFromCart(productId, swatch) {
+    const items = readCart();
+    const key = cartItemKey(productId, swatch);
+    writeCart(items.filter((i) => cartItemKey(i.id, i.swatch) !== key));
+  }
+
+  function clearCart() {
+    writeCart([]);
+  }
+
+  function cartCount() {
+    return readCart().reduce((sum, i) => sum + i.qty, 0);
+  }
+
+  function cartSubtotal() {
+    return readCart().reduce((sum, i) => {
+      const p = findProductById(i.id);
+      if (!p) return sum;
+      return sum + p.price * i.qty;
+    }, 0);
+  }
+
+  function formatAED(n) {
+    return "AED " + Number(n).toLocaleString();
+  }
+
+  function updateCartBadges() {
+    const count = cartCount();
+    document.querySelectorAll(".cart-count").forEach((el) => {
+      el.textContent = String(count);
+      el.classList.toggle("is-empty", count === 0);
+    });
+  }
+
+  /* ───────────────────────── Cart drawer ───────────────────────── */
+  function injectCartDrawer() {
+    if (document.getElementById("cart-drawer")) return;
+
+    const root = document.createElement("div");
+    root.id = "cart-drawer";
+    root.className = "cart-drawer";
+    root.setAttribute("aria-hidden", "true");
+    root.innerHTML = `
+      <button type="button" class="cart-drawer-backdrop" aria-label="Close cart"></button>
+      <aside class="cart-drawer-panel" role="dialog" aria-modal="true" aria-label="Shopping cart">
+        <header class="cart-drawer-head">
+          <div>
+            <span class="eyebrow no-rule" data-cart-eyebrow>Your Cart</span>
+            <h2 class="h-md" data-cart-title>The Bag</h2>
+          </div>
+          <button type="button" class="cart-close" aria-label="Close cart">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+              <path d="M6 6l12 12M18 6L6 18"/>
+            </svg>
+          </button>
+        </header>
+        <div class="cart-drawer-body" data-cart-body></div>
+        <footer class="cart-drawer-foot" data-cart-foot></footer>
+      </aside>
+    `;
+    document.body.appendChild(root);
+
+    root
+      .querySelector(".cart-drawer-backdrop")
+      .addEventListener("click", () => closeCart());
+    root
+      .querySelector(".cart-close")
+      .addEventListener("click", () => closeCart());
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && root.classList.contains("is-open")) {
+        closeCart();
+      }
+    });
+  }
+
+  let cartView = "cart"; // "cart" | "checkout" | "thanks"
+  let lastOrder = null;
+
+  function openCart() {
+    const root = document.getElementById("cart-drawer");
+    if (!root) return;
+    if (cartView === "checkout" && readCart().length === 0) cartView = "cart";
+    renderCartContents();
+    root.classList.add("is-open");
+    root.setAttribute("aria-hidden", "false");
+    document.body.classList.add("cart-open-lock");
+  }
+
+  function closeCart() {
+    const root = document.getElementById("cart-drawer");
+    if (!root) return;
+    root.classList.remove("is-open");
+    root.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("cart-open-lock");
+    if (cartView === "thanks") {
+      cartView = "cart";
+      renderCartContents();
+    }
+  }
+
+  function setView(v) {
+    cartView = v;
+    renderCartContents();
+  }
+
+  function flashAdded(name) {
+    let toast = document.getElementById("rayaa-toast");
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.id = "rayaa-toast";
+      toast.className = "rayaa-toast";
+      document.body.appendChild(toast);
+    }
+    toast.textContent = `Added — ${name}`;
+    toast.classList.add("is-on");
+    clearTimeout(flashAdded._t);
+    flashAdded._t = setTimeout(() => toast.classList.remove("is-on"), 1800);
+  }
+
+  function renderCartContents() {
+    const root = document.getElementById("cart-drawer");
+    if (!root) return;
+
+    const body = root.querySelector("[data-cart-body]");
+    const foot = root.querySelector("[data-cart-foot]");
+    const titleEl = root.querySelector("[data-cart-title]");
+    const eyebrowEl = root.querySelector("[data-cart-eyebrow]");
+    if (!body || !foot) return;
+
+    body.innerHTML = "";
+    foot.innerHTML = "";
+
+    if (cartView === "thanks") {
+      eyebrowEl.textContent = "Order Confirmed";
+      titleEl.textContent = "Thank you.";
+      const order = lastOrder || { reference: "RC-000000", email: "" };
+      body.innerHTML = `
+        <div class="cart-thanks">
+          <div class="cart-thanks-mark" aria-hidden="true">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12l5 5L20 6"/>
+            </svg>
+          </div>
+          <p class="lede">Thank you for purchasing from Rayaa &amp; Co.</p>
+          <p class="cart-thanks-note">
+            This is a placeholder confirmation — your order has been received.
+            A note from the atelier will follow shortly with shipping details
+            and a hand-signed care card.
+          </p>
+          <dl class="cart-thanks-meta">
+            <div><dt>Reference</dt><dd>${escapeHTML(order.reference)}</dd></div>
+            ${order.email ? `<div><dt>Email</dt><dd>${escapeHTML(order.email)}</dd></div>` : ""}
+          </dl>
+        </div>
+      `;
+      foot.innerHTML = `
+        <button type="button" class="btn btn-maroon cart-foot-btn" data-cart-continue>Continue Browsing</button>
+      `;
+      foot.querySelector("[data-cart-continue]").addEventListener("click", () => closeCart());
+      return;
+    }
+
+    if (cartView === "checkout") {
+      eyebrowEl.textContent = "Checkout";
+      titleEl.textContent = "Almost there.";
+      const subtotal = cartSubtotal();
+      const shipping = subtotal > 0 ? 60 : 0;
+      const total = subtotal + shipping;
+      body.innerHTML = `
+        <form class="cart-checkout-form" id="cart-checkout-form" novalidate>
+          <p class="cart-checkout-note">
+            This is a demo checkout — no payment will be taken. Fill the fields
+            below to receive a placeholder order confirmation.
+          </p>
+
+          <fieldset>
+            <legend>Contact</legend>
+            <label class="cart-field">
+              <span>Email</span>
+              <input name="email" type="email" required autocomplete="email" placeholder="you@example.com" />
+            </label>
+            <label class="cart-field">
+              <span>Full name</span>
+              <input name="name" type="text" required autocomplete="name" placeholder="Your name" />
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Shipping</legend>
+            <label class="cart-field">
+              <span>Address</span>
+              <input name="address" type="text" required autocomplete="street-address" placeholder="Street, building, apt" />
+            </label>
+            <div class="cart-field-row">
+              <label class="cart-field">
+                <span>City</span>
+                <input name="city" type="text" required autocomplete="address-level2" placeholder="Dubai" />
+              </label>
+              <label class="cart-field">
+                <span>Country</span>
+                <input name="country" type="text" required autocomplete="country-name" placeholder="UAE" />
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Payment</legend>
+            <p class="cart-payment-note">Card details are a placeholder — nothing is sent.</p>
+            <label class="cart-field">
+              <span>Card number</span>
+              <input name="card" type="text" inputmode="numeric" placeholder="4242 4242 4242 4242" />
+            </label>
+            <div class="cart-field-row">
+              <label class="cart-field">
+                <span>Expiry</span>
+                <input name="expiry" type="text" placeholder="MM / YY" />
+              </label>
+              <label class="cart-field">
+                <span>CVC</span>
+                <input name="cvc" type="text" inputmode="numeric" placeholder="123" />
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="cart-totals">
+            <div><span>Subtotal</span><span>${formatAED(subtotal)}</span></div>
+            <div><span>Shipping</span><span>${shipping ? formatAED(shipping) : "—"}</span></div>
+            <div class="cart-totals-grand"><span>Total</span><span>${formatAED(total)}</span></div>
+          </div>
+        </form>
+      `;
+      foot.innerHTML = `
+        <button type="button" class="btn cart-foot-btn cart-foot-secondary" data-cart-back>Back to Cart</button>
+        <button type="submit" form="cart-checkout-form" class="btn btn-maroon cart-foot-btn" data-cart-place>Place Order</button>
+      `;
+      foot.querySelector("[data-cart-back]").addEventListener("click", () => setView("cart"));
+      const form = body.querySelector("#cart-checkout-form");
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const data = new FormData(form);
+        const required = ["email", "name", "address", "city", "country"];
+        let ok = true;
+        required.forEach((k) => {
+          const input = form.querySelector(`[name="${k}"]`);
+          if (!input.value.trim()) {
+            input.classList.add("is-error");
+            ok = false;
+          } else {
+            input.classList.remove("is-error");
+          }
+        });
+        if (!ok) return;
+        lastOrder = {
+          reference: "RC-" + Math.floor(100000 + Math.random() * 900000),
+          email: data.get("email"),
+          name: data.get("name"),
+          total: total,
+        };
+        clearCart();
+        setView("thanks");
+      });
+      return;
+    }
+
+    // default: cart list
+    eyebrowEl.textContent = "Your Cart";
+    titleEl.textContent = "The Bag";
+
+    const items = readCart();
+    if (items.length === 0) {
+      body.innerHTML = `
+        <div class="cart-empty">
+          <p class="lede">Your bag is quiet for now.</p>
+          <p class="cart-empty-note">Each piece is hand-finished in our Dubai atelier. Start with the collection.</p>
+          <a href="collection.html" class="btn btn-maroon">Explore Collection</a>
+        </div>
+      `;
+      return;
+    }
+
+    const list = document.createElement("ul");
+    list.className = "cart-list";
+    items.forEach((i) => {
+      const p = findProductById(i.id);
+      if (!p) return;
+      const li = document.createElement("li");
+      li.className = "cart-item";
+      li.innerHTML = `
+        <div class="cart-item-img">
+          <img src="${escapeAttr(p.image)}" alt="${escapeAttr(p.name)}" loading="lazy" decoding="async" />
+          ${i.swatch ? `<span class="cart-item-swatch" style="background:${escapeAttr(i.swatch)}" aria-hidden="true"></span>` : ""}
+        </div>
+        <div class="cart-item-info">
+          <div class="cart-item-top">
+            <div>
+              <h3 class="cart-item-name">${escapeHTML(p.name)}</h3>
+              <p class="cart-item-cat">${escapeHTML(p.category)}</p>
+            </div>
+            <button type="button" class="cart-item-remove" aria-label="Remove ${escapeAttr(p.name)}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                <path d="M6 6l12 12M18 6L6 18"/>
+              </svg>
+            </button>
+          </div>
+          <div class="cart-item-bottom">
+            <div class="cart-qty" role="group" aria-label="Quantity for ${escapeAttr(p.name)}">
+              <button type="button" class="cart-qty-btn" data-act="dec" aria-label="Decrease quantity">−</button>
+              <span class="cart-qty-val">${i.qty}</span>
+              <button type="button" class="cart-qty-btn" data-act="inc" aria-label="Increase quantity">+</button>
+            </div>
+            <span class="cart-item-price">${formatAED(p.price * i.qty)}</span>
+          </div>
+        </div>
+      `;
+      li.querySelector("[data-act='dec']").addEventListener("click", () =>
+        updateQty(i.id, i.swatch, i.qty - 1),
+      );
+      li.querySelector("[data-act='inc']").addEventListener("click", () =>
+        updateQty(i.id, i.swatch, i.qty + 1),
+      );
+      li.querySelector(".cart-item-remove").addEventListener("click", () =>
+        removeFromCart(i.id, i.swatch),
+      );
+      list.appendChild(li);
+    });
+    body.appendChild(list);
+
+    const subtotal = cartSubtotal();
+    foot.innerHTML = `
+      <div class="cart-foot-row">
+        <span>Subtotal</span>
+        <strong>${formatAED(subtotal)}</strong>
+      </div>
+      <p class="cart-foot-note">Shipping calculated at checkout.</p>
+      <div class="cart-foot-actions">
+        <button type="button" class="btn cart-foot-btn cart-foot-secondary" data-cart-clear>Clear Bag</button>
+        <button type="button" class="btn btn-maroon cart-foot-btn" data-cart-checkout>Checkout</button>
+      </div>
+    `;
+    foot.querySelector("[data-cart-clear]").addEventListener("click", () => {
+      if (confirm("Clear all items from your bag?")) clearCart();
+    });
+    foot.querySelector("[data-cart-checkout]").addEventListener("click", () => setView("checkout"));
+  }
+
+  function attachCartTriggers() {
+    document.querySelectorAll('.icon-btn[aria-label="Cart"]').forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        openCart();
+      });
+    });
+  }
+
+  /* ───────────────────────── Helpers ───────────────────────── */
+  function escapeHTML(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    })[c]);
+  }
+  function escapeAttr(s) {
+    return escapeHTML(s);
+  }
+
+  /* ───────────────────────── Product card ───────────────────────── */
   function renderProductCard(p, priority) {
     const article = document.createElement("article");
     article.className = "product-card";
+    article.dataset.productId = p.id;
 
     if (p.tag) {
       const b = document.createElement("span");
@@ -279,6 +712,25 @@
 
     figure.appendChild(img);
     frame.appendChild(figure);
+
+    const quickAdd = document.createElement("button");
+    quickAdd.type = "button";
+    quickAdd.className = "quick-add";
+    quickAdd.setAttribute("aria-label", `Add ${p.name} to bag`);
+    quickAdd.innerHTML = `
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <path d="M12 5v14M5 12h14"/>
+      </svg>
+      <span>Add</span>
+    `;
+    quickAdd.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const activeSwatch = article.querySelector(".swatch.is-active");
+      const swatch = activeSwatch ? activeSwatch.style.background : null;
+      addToCart(p.id, swatch, 1);
+    });
+    frame.appendChild(quickAdd);
+
     article.appendChild(frame);
 
     const meta = document.createElement("div");
@@ -366,6 +818,21 @@
     meta.appendChild(right);
     article.appendChild(meta);
 
+    const addBtn = document.createElement("button");
+    addBtn.type = "button";
+    addBtn.className = "btn btn-maroon add-to-cart-btn";
+    addBtn.innerHTML = `
+      <span>Add to Bag</span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    `;
+    addBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const activeSwatch = article.querySelector(".swatch.is-active");
+      const swatch = activeSwatch ? activeSwatch.style.background : null;
+      addToCart(p.id, swatch, 1);
+    });
+    article.appendChild(addBtn);
+
     return article;
   }
 
@@ -387,7 +854,7 @@
     target.appendChild(frag);
   }
 
-  /* Marquee — static row, no scroll animation, no duplication */
+  /* ───────────────────────── Marquee ───────────────────────── */
   function renderMarquee(targetId, items) {
     const target = document.getElementById(targetId);
     if (!target) return;
@@ -414,7 +881,7 @@
     target.appendChild(track);
   }
 
-  /* Journal teaser */
+  /* ───────────────────────── Journal teaser ───────────────────────── */
   function renderJournalTeaser(targetId) {
     const target = document.getElementById(targetId);
     if (!target || !window.RAYAA_JOURNAL) return;
@@ -450,13 +917,13 @@
     target.appendChild(frag);
   }
 
-  /* Footer year */
+  /* ───────────────────────── Footer year ───────────────────────── */
   function setYear() {
     const el = document.querySelector("[data-year]");
     if (el) el.textContent = String(new Date().getFullYear());
   }
 
-  /* Forms */
+  /* ───────────────────────── Forms ───────────────────────── */
   function initContactForm() {
     const form = document.getElementById("contact-form");
     if (!form) return;
@@ -484,6 +951,7 @@
     });
   }
 
+  /* ───────────────────────── Init ───────────────────────── */
   function init() {
     injectActiveNavCSS();
     initTheme();
@@ -494,6 +962,9 @@
     setYear();
     initContactForm();
     initNewsletterForm();
+    injectCartDrawer();
+    attachCartTriggers();
+    updateCartBadges();
   }
 
   window.RAYAA = {
@@ -501,6 +972,9 @@
     renderMarquee,
     renderJournalTeaser,
     renderProductCard,
+    addToCart,
+    openCart,
+    closeCart,
   };
 
   if (document.readyState === "loading") {
