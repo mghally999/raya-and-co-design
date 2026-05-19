@@ -736,18 +736,45 @@
     const meta = document.createElement("div");
     meta.className = "meta";
 
-    const left = document.createElement("div");
-    left.className = "meta-left";
+    const topRow = document.createElement("div");
+    topRow.className = "meta-top";
+
+    const nameWrap = document.createElement("div");
+    nameWrap.className = "meta-name-wrap";
 
     const name = document.createElement("h3");
     name.className = "name";
     name.textContent = p.name;
-    left.appendChild(name);
+    nameWrap.appendChild(name);
 
     const cat = document.createElement("p");
     cat.className = "cat";
     cat.textContent = p.category;
-    left.appendChild(cat);
+    nameWrap.appendChild(cat);
+
+    topRow.appendChild(nameWrap);
+
+    const priceWrap = document.createElement("div");
+    priceWrap.className = "meta-price";
+
+    if (p.compareAt) {
+      const cmp = document.createElement("span");
+      cmp.className = "compare";
+      cmp.textContent = `AED ${p.compareAt.toLocaleString()}`;
+      priceWrap.appendChild(cmp);
+    }
+
+    const price = document.createElement("span");
+    price.className = "price";
+    price.textContent = `AED ${p.price.toLocaleString()}`;
+    priceWrap.appendChild(price);
+
+    topRow.appendChild(priceWrap);
+
+    meta.appendChild(topRow);
+
+    const bottomRow = document.createElement("div");
+    bottomRow.className = "meta-bottom";
 
     const swatchRow = document.createElement("div");
     swatchRow.className = "swatch-row";
@@ -797,33 +824,17 @@
       swatchRow.appendChild(sw);
     });
 
-    left.appendChild(swatchRow);
-
-    const right = document.createElement("div");
-    right.className = "text-right";
-
-    if (p.compareAt) {
-      const cmp = document.createElement("span");
-      cmp.className = "compare";
-      cmp.textContent = `AED ${p.compareAt.toLocaleString()}`;
-      right.appendChild(cmp);
-    }
-
-    const price = document.createElement("span");
-    price.className = "price";
-    price.textContent = `AED ${p.price.toLocaleString()}`;
-    right.appendChild(price);
-
-    meta.appendChild(left);
-    meta.appendChild(right);
-    article.appendChild(meta);
+    bottomRow.appendChild(swatchRow);
 
     const addBtn = document.createElement("button");
     addBtn.type = "button";
-    addBtn.className = "btn btn-maroon add-to-cart-btn";
+    addBtn.className = "add-to-cart-btn";
+    addBtn.setAttribute("aria-label", `Add ${p.name} to bag`);
     addBtn.innerHTML = `
-      <span>Add to Bag</span>
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      <span class="add-to-cart-label">Add to Bag</span>
+      <svg class="add-to-cart-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M12 5v14M5 12h14"/>
+      </svg>
     `;
     addBtn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -831,7 +842,10 @@
       const swatch = activeSwatch ? activeSwatch.style.background : null;
       addToCart(p.id, swatch, 1);
     });
-    article.appendChild(addBtn);
+    bottomRow.appendChild(addBtn);
+
+    meta.appendChild(bottomRow);
+    article.appendChild(meta);
 
     return article;
   }

@@ -1285,21 +1285,22 @@ section {
 /* Product cards — no transitions, no hover lift */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 14px;
-  row-gap: 48px;
+  grid-template-columns: 1fr;
+  column-gap: 18px;
+  row-gap: 56px;
 }
 
 @media (min-width: 520px) {
   .product-grid {
-    grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
-    column-gap: 24px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 22px;
     row-gap: 72px;
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 900px) {
   .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
     column-gap: 32px;
     row-gap: 96px;
   }
@@ -1309,6 +1310,7 @@ section {
   position: relative;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .product-card .frame {
@@ -1318,6 +1320,7 @@ section {
   overflow: hidden;
   border-radius: var(--radius-image);
   margin-top: 2px;
+  flex-shrink: 0;
 }
 
 @media (max-width: 767px) {
@@ -1378,38 +1381,58 @@ section {
 .product-card .meta {
   padding-top: 18px;
   display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+}
+
+.product-card .meta-top {
+  display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: flex-start;
   gap: 12px;
 }
 
-.product-card .meta-left {
+.product-card .meta-name-wrap {
   min-width: 0;
   flex: 1;
 }
 
+.product-card .meta-price {
+  flex-shrink: 0;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
 .product-card .name {
   font-family: var(--font-display);
-  font-size: 19px;
+  font-size: 20px;
   letter-spacing: -0.005em;
+  line-height: 1.1;
   margin: 0;
 }
 
 .product-card .cat {
-  font-size: 12px;
-  margin-top: 4px;
+  font-size: 11px;
+  margin-top: 5px;
   text-transform: uppercase;
   letter-spacing: 0.18em;
   color: var(--ink-soft);
   opacity: 0.75;
+  line-height: 1.3;
 }
 
 .product-card .price {
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 0.04em;
   color: var(--ink);
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .product-card .compare {
@@ -1417,21 +1440,34 @@ section {
   font-size: 11px;
   text-decoration: line-through;
   opacity: 0.5;
+  white-space: nowrap;
+}
+
+.product-card .meta-bottom {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: nowrap;
 }
 
 .product-card .swatch-row {
   display: flex;
-  gap: 6px;
-  margin-top: 10px;
+  gap: 7px;
+  margin: 0;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
 .product-card .swatch {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   border: 1px solid var(--rule);
   padding: 0;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .product-card .swatch.is-active {
@@ -1962,17 +1998,57 @@ textarea:focus-visible {
    Cart — Add-to-Bag button on product cards
    ───────────────────────────────────────────────────────────────────────── */
 .product-card .add-to-cart-btn {
-  margin-top: 16px;
-  width: 100%;
-  padding: 12px 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1px solid var(--maroon);
+  background: transparent;
+  color: var(--maroon);
+  font-family: var(--font-body);
   font-size: 10.5px;
+  font-weight: 500;
   letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 120ms ease;
+  line-height: 1;
 }
 
-@media (max-width: 480px) {
+.product-card .add-to-cart-btn:hover {
+  background: var(--maroon);
+  color: var(--bg);
+}
+
+.product-card .add-to-cart-btn:active {
+  transform: scale(0.97);
+}
+
+.product-card .add-to-cart-btn svg {
+  flex-shrink: 0;
+  transition: transform 160ms ease;
+}
+
+.product-card .add-to-cart-btn:hover svg {
+  transform: rotate(90deg);
+}
+
+@media (max-width: 768px) and (min-width: 520px) {
   .product-card .add-to-cart-btn {
-    margin-top: 14px;
-    padding: 11px 14px;
+    padding: 9px 14px;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 380px) {
+  .product-card .add-to-cart-btn {
+    padding: 9px 14px;
     font-size: 10px;
     letter-spacing: 0.18em;
   }
