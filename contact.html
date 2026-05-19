@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta
+      name="theme-color"
+      content="#f3ead6"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#14100c"
+      media="(prefers-color-scheme: dark)"
+    />
+    <title>Contact — Rayaa & Co</title>
+    <meta
+      name="description"
+      content="Write to the Rayaa & Co about us — appointments, custom commissions, and press."
+    />
+    <link rel="icon" href="assets/logo-img.PNG" type="image/png" />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("rayaa-theme");
+          if (!t)
+            t = matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap nav-inner">
+        <a href="index.html" class="logo-link" aria-label="Rayaa & Co — home">
+          <span class="logo-mark" aria-hidden="true"
+            ><img src="assets/logo-img.PNG" alt="" width="36" height="36"
+          /></span>
+          <span class="logo-text">Rayaa <em>&amp; Co</em></span>
+        </a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="collection.html" data-nav-link="collection" class="nav-link"
+            >Collection</a
+          >
+          <a href="about us.html" data-nav-link="about us" class="nav-link"
+            >about us</a
+          >
+          <a
+            href="limitededition.html"
+            data-nav-link="Limited Edition"
+            class="nav-link"
+            >Limited Edition</a
+          >
+          <a href="contact.html" data-nav-link="contact" class="nav-link"
+            >Contact</a
+          >
+        </nav>
+        <div class="nav-actions">
+          <button
+            type="button"
+            class="icon-btn theme-toggle"
+            aria-label="Switch theme"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <g class="icon-sun">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path
+                  d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+                ></path>
+              </g>
+              <g class="icon-moon" style="display: none">
+                <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path>
+              </g>
+            </svg>
+          </button>
+          <button type="button" class="icon-btn" aria-label="Cart">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M6 7h12l-1.5 11.2A2 2 0 0 1 14.5 20h-5A2 2 0 0 1 7.5 18.2L6 7Z"
+              ></path>
+              <path d="M9 7V5a3 3 0 0 1 6 0v2"></path>
+            </svg>
+            <span class="cart-count">0</span>
+          </button>
+          <button
+            type="button"
+            class="icon-btn hamburger"
+            aria-label="Open menu"
+            aria-expanded="false"
+            aria-controls="mobile-nav"
+          >
+            <span class="bar"></span><span class="bar"></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div id="mobile-nav" class="mobile-nav" aria-hidden="true">
+      <button
+        type="button"
+        class="mobile-nav-backdrop"
+        aria-label="Close menu"
+      ></button>
+      <nav class="mobile-nav-panel" aria-label="Mobile">
+        <div class="mobile-nav-head">
+          <span class="eyebrow no-rule">Menu</span
+          ><span class="badge-text">SS'26 · Edition 01</span>
+        </div>
+        <ul class="mobile-nav-list">
+          <li>
+            <a href="collection.html" data-nav-link="collection"
+              ><span class="label">Collection</span
+              ><span class="num">01</span></a
+            >
+          </li>
+          <li>
+            <a href="about us.html" data-nav-link="about us"
+              ><span class="label">about us</span><span class="num">02</span></a
+            >
+          </li>
+          <li>
+            <a href="limitededition.html" data-nav-link="journal"
+              ><span class="label">Journal</span><span class="num">03</span></a
+            >
+          </li>
+          <li>
+            <a href="contact.html" data-nav-link="contact"
+              ><span class="label">Contact</span><span class="num">04</span></a
+            >
+          </li>
+        </ul>
+        <div class="mobile-nav-foot">
+          <a href="mailto:hello@rayaaandco.com">hello@rayaaandco.com</a>
+          <a
+            class="ig"
+            href="https://instagram.com/rayaa_and_co"
+            target="_blank"
+            rel="noreferrer"
+            >@rayaa_and_co</a
+          >
+          <p class="note">Made by hand in Dubai</p>
+        </div>
+      </nav>
+    </div>
+
+    <main>
+      <section class="pt-32 md:pt-40">
+        <div class="wrap">
+          <div>
+            <p class="eyebrow mb-6">Contact</p>
+            <h1 class="display max-w-14">
+              We'd love to <em>hear from you.</em>
+            </h1>
+          </div>
+
+          <div class="split mt-12 md:mt-16" style="align-items: flex-start">
+            <div>
+              <div class="contact-img">
+                <img
+                  src="assets/logo-img.PNG"
+                  alt="Visit the about us"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+            </div>
+
+            <div>
+              <div class="max-w-44">
+                <p class="lede">
+                  For appointments, custom commissions, and press inquiries. We
+                  reply to every note ourselves — typically within two days.
+                </p>
+
+                <form class="contact-form" id="contact-form" novalidate>
+                  <label>
+                    <span class="label-text">Your name</span>
+                    <input name="name" type="text" autocomplete="name" />
+                  </label>
+                  <label>
+                    <span class="label-text">Email</span>
+                    <input name="email" type="email" autocomplete="email" />
+                  </label>
+                  <label>
+                    <span class="label-text">Subject</span>
+                    <input name="subject" type="text" />
+                  </label>
+                  <label>
+                    <span class="label-text">Message</span>
+                    <textarea name="message" rows="5"></textarea>
+                  </label>
+                  <button type="submit" class="btn btn-maroon">Send</button>
+                </form>
+
+                <div class="contact-meta">
+                  <div>
+                    <p class="eyebrow no-rule mb-3">Visit</p>
+                    <p>Jumeirah, Dubai · UAE</p>
+                  </div>
+                  <div>
+                    <p class="eyebrow no-rule mb-3">Connect</p>
+                    <p>
+                      <a href="mailto:hello@rayaaandco.com"
+                        >hello@rayaaandco.com</a
+                      ><br />
+                      <a
+                        href="https://instagram.com/rayaa_and_co"
+                        target="_blank"
+                        rel="noreferrer"
+                        >@rayaa_and_co</a
+                      >
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="footer-letter">
+          <div>
+            <p class="eyebrow mb-6">The Letter</p>
+            <h3 class="h-lg">Quiet notes from <br /><em>the about us.</em></h3>
+          </div>
+          <form class="footer-form" id="newsletter-form" novalidate>
+            <input
+              type="email"
+              name="email"
+              placeholder="Your email"
+              aria-label="Your email"
+            />
+            <button type="submit" class="btn btn-maroon">Subscribe</button>
+          </form>
+        </div>
+        <div class="footer-cols">
+          <div class="footer-brand">
+            <a
+              href="index.html"
+              class="logo-link"
+              aria-label="Rayaa & Co — home"
+            >
+              <span class="logo-mark size-48"
+                ><img src="assets/logo-img.PNG" alt="" width="48" height="48"
+              /></span>
+              <span class="logo-text">Rayaa <em>&amp; Co</em></span>
+            </a>
+            <p>
+              A house of embroidery and about us-made wear. Based in Dubai.
+              Pieces are made slowly, in small numbers.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h4>Shop</h4>
+            <ul>
+              <li><a href="collection.html">Collection</a></li>
+              <li><a href="collection.html?cat=jalabiyas">Jalabiyas</a></li>
+              <li><a href="collection.html?cat=abayas">Abayas</a></li>
+              <li><a href="collection.html?cat=accessories">Accessories</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>House</h4>
+            <ul>
+              <li><a href="about us.html">about us</a></li>
+              <li><a href="limitededition.html">Journal</a></li>
+              <li><a href="contact.html">Contact</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Connect</h4>
+            <ul>
+              <li>
+                <a
+                  href="https://instagram.com/rayaa_and_co"
+                  target="_blank"
+                  rel="noreferrer"
+                  >Instagram</a
+                >
+              </li>
+              <li><a href="mailto:hello@rayaaandco.com">Email</a></li>
+              <li>
+                <a
+                  href="https://wa.me/971000000000"
+                  target="_blank"
+                  rel="noreferrer"
+                  >WhatsApp</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-base">
+          <p>
+            © <span data-year>2026</span> Rayaa &amp; Co. All looks, all hands.
+          </p>
+          <p class="signature">Made by hand in Dubai</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="assets/js/main.js" defer></script>
+  </body>
+</html>

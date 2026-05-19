@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta
+      name="theme-color"
+      content="#f3ead6"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#14100c"
+      media="(prefers-color-scheme: dark)"
+    />
+    <title>Rayaa & Co — A House of Embroidery</title>
+    <meta
+      name="description"
+      content="Quiet luxury, crafted by hand. Mirror-work, hand-beading and silk-thread embroidery on heirloom silhouettes. Dubai."
+    />
+    <link rel="icon" href="assets/logo-img.PNG" type="image/png" />
+    <link rel="apple-touch-icon" href="assets/logo-img.PNG" />
+    <link rel="preload" as="image" href="assets/images/look-09.jpg" />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("rayaa-theme");
+          if (!t)
+            t = matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap nav-inner">
+        <a href="index.html" class="logo-link" aria-label="Rayaa & Co — home">
+          <span class="logo-mark" aria-hidden="true"
+            ><img src="assets/logo-img.PNG" alt="" width="36" height="36"
+          /></span>
+          <span class="logo-text">Rayaa <em>&amp; Co</em></span>
+        </a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="collection.html" data-nav-link="collection" class="nav-link"
+            >Collection</a
+          >
+          <a href="about us.html" data-nav-link="about us" class="nav-link"
+            >about us</a
+          >
+          <a
+            href="limitededition.html"
+            data-nav-link="Limited Edition"
+            class="nav-link"
+            >Limited Edition</a
+          >
+          <a href="contact.html" data-nav-link="contact" class="nav-link"
+            >Contact</a
+          >
+        </nav>
+        <div class="nav-actions">
+          <button
+            type="button"
+            class="icon-btn theme-toggle"
+            aria-label="Switch theme"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <g class="icon-sun">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path
+                  d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+                ></path>
+              </g>
+              <g class="icon-moon" style="display: none">
+                <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path>
+              </g>
+            </svg>
+          </button>
+          <button type="button" class="icon-btn" aria-label="Cart">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M6 7h12l-1.5 11.2A2 2 0 0 1 14.5 20h-5A2 2 0 0 1 7.5 18.2L6 7Z"
+              ></path>
+              <path d="M9 7V5a3 3 0 0 1 6 0v2"></path>
+            </svg>
+            <span class="cart-count">0</span>
+          </button>
+          <button
+            type="button"
+            class="icon-btn hamburger"
+            aria-label="Open menu"
+            aria-expanded="false"
+            aria-controls="mobile-nav"
+          >
+            <span class="bar"></span><span class="bar"></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div id="mobile-nav" class="mobile-nav" aria-hidden="true">
+      <button
+        type="button"
+        class="mobile-nav-backdrop"
+        aria-label="Close menu"
+      ></button>
+      <nav class="mobile-nav-panel" aria-label="Mobile">
+        <div class="mobile-nav-head">
+          <span class="eyebrow no-rule">Menu</span
+          ><span class="badge-text">SS'26 · Edition 01</span>
+        </div>
+        <ul class="mobile-nav-list">
+          <li>
+            <a href="collection.html" data-nav-link="collection"
+              ><span class="label">Collection</span
+              ><span class="num">01</span></a
+            >
+          </li>
+          <li>
+            <a href="about us.html" data-nav-link="about us"
+              ><span class="label">about us</span><span class="num">02</span></a
+            >
+          </li>
+          <li>
+            <a href="limitededition.html" data-nav-link="journal"
+              ><span class="label">Journal</span><span class="num">03</span></a
+            >
+          </li>
+          <li>
+            <a href="contact.html" data-nav-link="contact"
+              ><span class="label">Contact</span><span class="num">04</span></a
+            >
+          </li>
+        </ul>
+        <div class="mobile-nav-foot">
+          <a href="mailto:hello@rayaaandco.com">hello@rayaaandco.com</a>
+          <a
+            class="ig"
+            href="https://instagram.com/rayaa_and_co"
+            target="_blank"
+            rel="noreferrer"
+            >@rayaa_and_co</a
+          >
+          <p class="note">Made by hand in Dubai</p>
+        </div>
+      </nav>
+    </div>
+
+    <main>
+      <section class="hero">
+        <div class="wrap hero-grid">
+          <div>
+            <p class="hero-eyebrow eyebrow">A House of Embroidery · Dubai</p>
+            <h1 class="display">
+              Quiet <em>luxury,</em><br />crafted by hand.
+            </h1>
+            <p class="hero-lede lede mt-8 max-w-42">
+              Mirror-work, hand-beading, and silk-thread embroidery on heirloom
+              silhouettes. Limited pieces, made slowly in our Dubai about us.
+            </p>
+            <div class="hero-cta mt-10 flex flex-wrap gap-4 items-center">
+              <a href="collection.html" class="btn">
+                Explore Collection
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </a>
+              <a href="about us.html" class="btn btn-maroon">Our about us</a>
+            </div>
+          </div>
+
+          <div class="hero-image-col">
+            <div class="hero-image-wrap">
+              <div class="hero-frame">
+                <div class="img">
+                  <img
+                    src="assets/images/look-09.jpg"
+                    alt="Rayaa & Co — hero look"
+                    fetchpriority="high"
+                    decoding="async"
+                  />
+                </div>
+              </div>
+              <span class="hero-pill tl">SS'26 · Edition 01</span>
+              <span class="hero-pill br">Made by hand</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="wrap scroll-indicator">
+          <span class="rule"></span>Scroll
+        </div>
+      </section>
+
+      <div class="marquee" id="marquee" aria-hidden="true"></div>
+
+      <section style="background: var(--bg-soft)">
+        <div class="wrap">
+          <p class="eyebrow mb-10">Lookbook · Edition 01</p>
+
+          <div class="split">
+            <div>
+              <div class="lookbook-img">
+                <img
+                  src="assets/images/look-04.jpg"
+                  alt="Editorial Look 01"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span class="pill">Look 01 · Noor</span>
+              </div>
+            </div>
+            <div>
+              <div class="max-w-42">
+                <h2 class="h-lg">
+                  A piece is not finished until <br /><em>the hand says so.</em>
+                </h2>
+                <p class="lede mt-8">
+                  Every Rayaa &amp; Co garment passes through six pairs of hands
+                  before it leaves the about us. Pattern, cut, embroidery,
+                  mirror-setting, finish, and final inspection — nothing is
+                  rushed.
+                </p>
+                <p class="mt-6 opacity-80">
+                  Our embroiderers train for years before they touch a finished
+                  bodice. The work shows in the smallest places: the way a
+                  mirror catches the light, the weight of a hem, the silence of
+                  a perfectly hidden seam.
+                </p>
+                <a href="about us.html" class="btn btn-maroon mt-10"
+                  >Read more</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="split reverse mt-24">
+            <div>
+              <div class="lookbook-img">
+                <img
+                  src="assets/images/look-13.jpg"
+                  alt="Editorial Look 02"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span class="pill">Look 02 · Dana</span>
+              </div>
+            </div>
+            <div>
+              <div class="max-w-42">
+                <h2 class="h-lg">
+                  Heirloom pieces, <br /><em>made for daughters.</em>
+                </h2>
+                <p class="lede mt-8">
+                  We don't chase trends. Edition 01 is built around five
+                  silhouettes that will be loved long after the season ends —
+                  the kind of pieces that live in a closet for a generation.
+                </p>
+                <a href="collection.html" class="btn mt-10">Shop the Edition</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap">
+          <div
+            class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 md:gap-10 mb-12 md:mb-16"
+          >
+            <div>
+              <p class="eyebrow mb-6">Journal</p>
+              <h2 class="h-xl">Quiet readings.</h2>
+            </div>
+            <div>
+              <a href="limitededition.html" class="btn inline-flex"
+                >All entries</a
+              >
+            </div>
+          </div>
+          <div
+            class="grid grid-cols-1 md:grid-cols-3 gap-10"
+            id="journal-teaser"
+          ></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="footer-letter">
+          <div>
+            <p class="eyebrow mb-6">The Letter</p>
+            <h3 class="h-lg">Quiet notes from <br /><em>the about us.</em></h3>
+          </div>
+          <form class="footer-form" id="newsletter-form" novalidate>
+            <input
+              type="email"
+              name="email"
+              placeholder="Your email"
+              aria-label="Your email"
+            />
+            <button type="submit" class="btn btn-maroon">Subscribe</button>
+          </form>
+        </div>
+
+        <div class="footer-cols">
+          <div class="footer-brand">
+            <a
+              href="index.html"
+              class="logo-link"
+              aria-label="Rayaa & Co — home"
+            >
+              <span class="logo-mark size-48"
+                ><img src="assets/logo-img.PNG" alt="" width="48" height="48"
+              /></span>
+              <span class="logo-text">Rayaa <em>&amp; Co</em></span>
+            </a>
+            <p>
+              A house of embroidery and about us-made wear. Based in Dubai.
+              Pieces are made slowly, in small numbers.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h4>Shop</h4>
+            <ul>
+              <li><a href="collection.html">Collection</a></li>
+              <li><a href="collection.html?cat=jalabiyas">Jalabiyas</a></li>
+              <li><a href="collection.html?cat=abayas">Abayas</a></li>
+              <li><a href="collection.html?cat=accessories">Accessories</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>House</h4>
+            <ul>
+              <li><a href="about us.html">about us</a></li>
+              <li><a href="limitededition.html">Journal</a></li>
+              <li><a href="contact.html">Contact</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Connect</h4>
+            <ul>
+              <li>
+                <a
+                  href="https://instagram.com/rayaa_and_co"
+                  target="_blank"
+                  rel="noreferrer"
+                  >Instagram</a
+                >
+              </li>
+              <li><a href="mailto:hello@rayaaandco.com">Email</a></li>
+              <li>
+                <a
+                  href="https://wa.me/971000000000"
+                  target="_blank"
+                  rel="noreferrer"
+                  >WhatsApp</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-base">
+          <p>
+            © <span data-year>2026</span> Rayaa &amp; Co. All looks, all hands.
+          </p>
+          <p class="signature">Made by hand in Dubai</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="assets/js/products.js" defer></script>
+    <script src="assets/js/main.js" defer></script>
+    <script defer>
+      document.addEventListener("DOMContentLoaded", function () {
+        if (window.RAYAA) {
+          window.RAYAA.renderMarquee("marquee");
+          window.RAYAA.renderProductGrid("featured-grid", 8);
+          window.RAYAA.renderJournalTeaser("journal-teaser");
+          var vb = document.getElementById("view-all-btn");
+          if (vb && window.RAYAA_PRODUCTS)
+            vb.textContent = "View All (" + window.RAYAA_PRODUCTS.length + ")";
+        }
+      });
+    </script>
+  </body>
+</html>
